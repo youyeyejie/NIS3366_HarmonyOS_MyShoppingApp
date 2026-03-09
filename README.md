@@ -19,28 +19,30 @@ NIS3366_HarmonyOS_MyShoppingApp
 ├─ AppScope/                        # 应用级资源与配置
 ├─ docs/                            # 课程文档（需求分析、软件设计）
 ├─ entry/                           # 主模块（页面与业务代码核心）
-│  └─ src/main/ets
-│  ├─ models/                       # 数据模型定义
-│  │  ├─ Product.ets
-│  │  ├─ Category.ets
-│  │  ├─ CartItem.ets
-│  │  └─ UserInfo.ets
-│  ├─ pages/                        # 页面层
-│  │  ├─ Index.ets
-│  │  ├─ HomePage.ets
-│  │  ├─ CartPage.ets
-│  │  └─ ProfilePage.ets
-│  ├─ services/                     # 业务服务层
-│  │  ├─ ProductService.ets
-│  │  ├─ CategoryService.ets
-│  │  ├─ CartService.ets
-│  │  └─ UserService.ets
-│  └─ utils/                        # 通用组件与工具
-│     ├─ BottomNavBar.ets
-│     ├─ ProductCard.ets
-│     ├─ CartItemCard.ets
-│     ├─ ProductDataSource.ets
-│     └─ Dialog.ets
+│  ├─ build/                        # 构建产物输出目录
+│  ├─ src/main/ets                  # 主代码目录
+│  │  ├─ models/                    # 数据模型定义
+│  │  │  ├─ Product.ets
+│  │  │  ├─ Category.ets
+│  │  │  ├─ CartItem.ets
+│  │  │  └─ UserInfo.ets
+│  │  ├─ pages/                     # 页面层
+│  │  │  ├─ Index.ets
+│  │  │  ├─ HomePage.ets
+│  │  │  ├─ CartPage.ets
+│  │  │  └─ ProfilePage.ets
+│  │  ├─ services/                  # 业务服务层
+│  │  │  ├─ ProductService.ets
+│  │  │  ├─ CategoryService.ets
+│  │  │  ├─ CartService.ets
+│  │  │  └─ UserService.ets
+│  │  └─ utils/                     # 通用组件与工具
+│  │     ├─ BottomNavBar.ets
+│  │     ├─ ProductCard.ets
+│  │     ├─ CartItemCard.ets
+│  │     ├─ ProductDataSource.ets
+│  │     └─ Dialog.ets
+│  └─ src/main/resources/           # 资源文件目录
 ├─ image/                           # README 演示截图与图标
 ├─ hvigor/                          # Hvigor 构建配置
 ├─ build-profile.json5              # 应用构建配置

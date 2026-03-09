@@ -1,10 +1,18 @@
 import { CartItem } from '../models/CartItem';
 
+/**
+ * 商品卡片组件，用于显示购物车中的商品信息
+ *
+ * 包含商品图片、名称、价格、数量控制和选择框
+ *
+ * 支持商品数量的增加、减少和移除操作
+ */
 @Component
 export struct CartItemCard {
   @Prop public item: CartItem = {} as CartItem;
   @Prop isSelected: boolean = false;
   
+  // 父组件传入的回调函数 
   onToggleSelect?: (productId: number) => void;
   onDecreaseQuantity?: (item: CartItem) => void;
   onIncreaseQuantity?: (item: CartItem) => void;
@@ -26,7 +34,7 @@ export struct CartItemCard {
           }
         })
 
-      // 商品图片 - 使用 $r() 引用资源
+      // 商品图片
       Image($r(this.item.product.img))
         .width(80)
         .height(80)

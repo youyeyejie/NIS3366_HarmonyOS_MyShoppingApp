@@ -11,6 +11,11 @@ class HomePageDataSource extends ProductDataSource {
   }
 }
 
+/**
+ * 首页组件，显示商品分类导航和商品列表
+ *
+ * 包含顶部标题栏、分类导航和商品列表等核心功能，同时支持下拉刷新和上拉加载更多。
+ */
 @Component
 export struct HomePage {
   @State categories: Category[] = [];
@@ -26,6 +31,10 @@ export struct HomePage {
     this.categories = this.categoryService.getCategories();
   }
 
+  /**
+   * 分类点击事件处理方法，更新选中的分类，并重新加载商品数据。
+   * @param categoryId 分类ID
+   */
   onCategoryClick(categoryId: string): void {
     if (this.selectedCategory === categoryId) {
       return;
@@ -41,12 +50,18 @@ export struct HomePage {
     this.dataSource.setCategory(categoryId);
   }
 
+  /**
+   * 下拉刷新事件处理方法，触发数据源重新加载数据，并更新刷新状态。
+   */
   onRefresh(): void {
     this.isRefreshing = true;
     this.dataSource.loadProducts();
     this.isRefreshing = false;
   }
 
+  /**
+   * 滚动停止事件处理方法，检查滚动位置并决定是否显示返回顶部按钮，同时触底时加载更多数据。
+   */
   onScrollStop(): void {
     // 滚动停止时检查位置
     let yOffset = this.scroller.currentOffset().yOffset;
@@ -56,6 +71,9 @@ export struct HomePage {
     }
   }
 
+  /**
+   * 返回顶部按钮点击事件处理方法，触发滚动到顶部的动画。
+   */
   scrollToTop(): void {
     this.scroller.scrollTo({
       xOffset: 0,

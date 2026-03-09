@@ -1,5 +1,10 @@
 import { CartService } from '../services/CartService';
 
+/**
+ * 底部导航栏组件，包含首页、购物车和我的三个选项
+ *
+ * 购物车选项会显示当前购物车中的商品数量
+ */
 @Component
 export struct BottomNavBar {
   @State currentIndex: number = 0;
@@ -7,6 +12,7 @@ export struct BottomNavBar {
   private cartService: CartService = CartService.getInstance();
   onTabChange?: (index: number) => void;
 
+  // 组件即将显示时，获取购物车数量并监听购物车变化
   aboutToAppear(): void {
     this.cartService.onCartChange(() => {
       this.cartCount = this.cartService.getCartCount();

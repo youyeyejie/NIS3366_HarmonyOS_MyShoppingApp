@@ -28,33 +28,66 @@ const MOCK_PRODUCTS: Product[] = [
     { id: 20, name: "纯牛奶 250ml*12盒", price: 59, img: "app.media.20", category: "食品生鲜" }
 ];
 
+/**
+ * 商品服务类，提供获取商品列表的方法
+ */
 export class ProductService {
+  // 单例实例
   private static instance: ProductService;
 
+  // 私有构造函数
   private constructor() {}
 
+  /**
+   * 获取单例实例
+   */
   public static getInstance(): ProductService {
     if (!ProductService.instance) {
       ProductService.instance = new ProductService();
     }
     return ProductService.instance;
   }
-  // 获取商品列表（支持分页）
+
+  /**
+   * 分页获取商品列表
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @param category 商品类别（可选）
+   * @returns 商品列表
+   */
   public getProducts(page: number, pageSize: number, category?: string): Product[] {
     let filtered = MOCK_PRODUCTS;
+    // 先筛选分类
     if (category && category !== "all") {
       filtered = MOCK_PRODUCTS.filter((p) => p.category === category);
     }
+    // 计算当前页起始/结束索引，返回对应页的商品
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
     return filtered.slice(start, end);
   }
-  // 检查是否还有更多商品
+
+  /**
+   * 判断是否有更多商品
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @param category 商品类别（可选）
+   * @returns 是否有更多商品
+   */
   public hasMoreProducts(page: number, pageSize: number, category?: string): boolean {
     let filtered = MOCK_PRODUCTS;
     if (category && category !== "all") {
       filtered = MOCK_PRODUCTS.filter((p) => p.category === category);
     }
     return page * pageSize < filtered.length;
+  }
+
+  /**
+   * 根据ID获取商品详情
+   * @param productId 商品ID
+   * @returns 商品详情
+   */
+  public getProductById(productId: number): Product | undefined {
+    return MOCK_PRODUCTS.find((p) => p.id === productId);
   }
 }

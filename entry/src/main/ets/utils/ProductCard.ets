@@ -60,7 +60,7 @@ export struct ProductCard {
               }
             })
             .onClick(() => {
-              this.cartService.addToCart(this.product);
+              this.cartService.addToCart(this.product.id);
             })
         }
         .width('100%')

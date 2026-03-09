@@ -1,6 +1,6 @@
 import { CartItem } from "../models/CartItem";
 import { CartService } from "../services/CartService";
-import { Toast } from "../utils/Toast";
+import { Dialog } from "../utils/Dialog";
 import { CartItemCard } from "../utils/CartItemCard";
 
 @Component
@@ -227,7 +227,7 @@ export struct CartPage {
               .backgroundColor("#ff4d4f")
               .fontColor(Color.White)
               .borderRadius(20)
-              .onClick(() => Toast.showNotImplemented())
+              .onClick(() => Dialog.showNotImplemented())
           }
           .width("100%")
           .justifyContent(FlexAlign.SpaceBetween)

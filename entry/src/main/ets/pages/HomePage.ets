@@ -3,7 +3,7 @@ import { Category } from '../models/Category';
 import { CategoryService } from '../services/CategoryService';
 import { ProductDataSource } from '../utils/ProductDataSource';
 import { ProductCard } from '../utils/ProductCard';
-import { Toast } from '../utils/Toast';
+import { Dialog } from '../utils/Dialog';
 
 class HomePageDataSource extends ProductDataSource {
   constructor() {
@@ -81,12 +81,12 @@ export struct HomePage {
           Image($r('app.media.search'))
             .width(24)
             .height(24)
-            .onClick(() => Toast.showNotImplemented())
+            .onClick(() => Dialog.showNotImplemented())
           Image($r('app.media.bell'))
             .width(24)
             .height(24)
             .margin({ left: 16 })
-            .onClick(() => Toast.showNotImplemented())
+            .onClick(() => Dialog.showNotImplemented())
         }
       }
       .justifyContent(FlexAlign.SpaceBetween)
@@ -133,7 +133,7 @@ export struct HomePage {
             .padding(12)
             .width('100%')
             .backgroundColor('#f5f5f5')
-            .onScrollIndex((lastIndex: number) => {
+            .onScrollIndex((FirstIndex: number, lastIndex: number) => {
               // 滚动到接近底部时加载更多
               if (lastIndex >= this.dataSource.totalCount() - 2 && this.dataSource.getHasMore()) {
                 this.dataSource.loadMore();

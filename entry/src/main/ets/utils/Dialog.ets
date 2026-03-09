@@ -1,4 +1,4 @@
-export class Toast {
+export class Dialog {
   static show(message: string): void {
     AlertDialog.show({
       title: "提示",
@@ -12,6 +12,6 @@ export class Toast {
   }
 
   static showNotImplemented(): void {
-    Toast.show("功能尚未实现，敬请期待！");
+    Dialog.show("功能尚未实现，敬请期待！");
   }
 }

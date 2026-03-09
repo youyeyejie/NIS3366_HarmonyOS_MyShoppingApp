@@ -1,14 +1,10 @@
 import { UserInfo } from '../models/UserInfo';
-import { Toast } from '../utils/Toast';
+import { Dialog } from '../utils/Dialog';
 import { UserService } from '../services/UserService';
 
 @Component
 export struct ProfilePage {
   @State userInfo: UserInfo = UserService.getInstance().getUserInfo();
-
-  showToast(): void {
-    Toast.showNotImplemented();
-  }
 
   build() {
     Column() {
@@ -50,7 +46,7 @@ export struct ProfilePage {
             .margin({ top: 4 })
         }
         .layoutWeight(1)
-        .onClick(() => this.showToast())
+        .onClick(() => Dialog.showNotImplemented())
 
         Column() {
           Image($r('app.media.like'))
@@ -62,7 +58,7 @@ export struct ProfilePage {
             .margin({ top: 4 })
         }
         .layoutWeight(1)
-        .onClick(() => this.showToast())
+        .onClick(() => Dialog.showNotImplemented())
 
         Column() {
           Image($r('app.media.credit'))
@@ -74,7 +70,7 @@ export struct ProfilePage {
             .margin({ top: 4 })
         }
         .layoutWeight(1)
-        .onClick(() => this.showToast())
+        .onClick(() => Dialog.showNotImplemented())
 
         Column() {
           Image($r('app.media.setting'))
@@ -86,7 +82,7 @@ export struct ProfilePage {
             .margin({ top: 4 })
         }
         .layoutWeight(1)
-        .onClick(() => this.showToast())
+        .onClick(() => Dialog.showNotImplemented())
       }
       .width('100%')
       .padding({ top: 16, bottom: 16 })
@@ -122,7 +118,7 @@ export struct ProfilePage {
               .margin({ top: 2 })
           }
           .layoutWeight(1)
-          .onClick(() => this.showToast())
+          .onClick(() => Dialog.showNotImplemented())
 
           Column() {
             Image($r('app.media.truck'))
@@ -138,7 +134,7 @@ export struct ProfilePage {
               .margin({ top: 2 })
           }
           .layoutWeight(1)
-          .onClick(() => this.showToast())
+          .onClick(() => Dialog.showNotImplemented())
 
           Column() {
             Image($r('app.media.box'))
@@ -154,7 +150,7 @@ export struct ProfilePage {
               .margin({ top: 2 })
           }
           .layoutWeight(1)
-          .onClick(() => this.showToast())
+          .onClick(() => Dialog.showNotImplemented())
 
           Column() {
             Image($r('app.media.comment'))
@@ -170,7 +166,7 @@ export struct ProfilePage {
               .margin({ top: 2 })
           }
           .layoutWeight(1)
-          .onClick(() => this.showToast())
+          .onClick(() => Dialog.showNotImplemented())
         }
         .width('100%')
         .padding({ top: 16, bottom: 16 })
@@ -210,7 +206,7 @@ export struct ProfilePage {
         .fontColor('#ff4d4f')
         .borderRadius(8)
         .margin({ top: 24 })
-        .onClick(() => this.showToast())
+        .onClick(() => Dialog.showNotImplemented())
     }
     .width('100%')
     .height('100%')
@@ -241,6 +237,6 @@ export struct ProfilePage {
       width: { bottom: showBorder ? 1 : 0 },
       color: '#f0f0f0'
     })
-    .onClick(() => this.showToast())
+    .onClick(() => Dialog.showNotImplemented())
   }
 }

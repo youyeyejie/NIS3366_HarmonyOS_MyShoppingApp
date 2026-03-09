@@ -3,7 +3,7 @@ import { CartService } from '../services/CartService';
 
 @Component
 export struct ProductCard {
-  private product: Product = {} as Product;
+  public product: Product = {} as Product;
   private cartService: CartService = CartService.getInstance();
   @State private isPressed: boolean = false;
 

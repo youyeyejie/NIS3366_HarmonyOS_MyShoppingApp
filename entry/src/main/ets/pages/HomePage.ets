@@ -11,7 +11,6 @@ class HomePageDataSource extends ProductDataSource {
   }
 }
 
-@Entry
 @Component
 export struct HomePage {
   @State categories: Category[] = [];
@@ -134,7 +133,7 @@ export struct HomePage {
             .padding(12)
             .width('100%')
             .backgroundColor('#f5f5f5')
-            .onScrollIndex((firstIndex: number, lastIndex: number) => {
+            .onScrollIndex((lastIndex: number) => {
               // 滚动到接近底部时加载更多
               if (lastIndex >= this.dataSource.totalCount() - 2 && this.dataSource.getHasMore()) {
                 this.dataSource.loadMore();

@@ -1,11 +1,9 @@
 import { CartItem } from '../models/CartItem';
-import { CartService } from '../services/CartService';
 
 @Component
 export struct CartItemCard {
-  private item: CartItem = {} as CartItem;
+  @Prop public item: CartItem = {} as CartItem;
   @Prop isSelected: boolean = false;
-  private cartService: CartService = CartService.getInstance();
   
   onToggleSelect?: (productId: number) => void;
   onDecreaseQuantity?: (item: CartItem) => void;
@@ -23,7 +21,6 @@ export struct CartItemCard {
         .width(24)
         .height(24)
         .onClick(() => {
-          this.isSelected = !this.isSelected;
           if (this.onToggleSelect && this.item.product) {
             this.onToggleSelect(this.item.product.id);
           }

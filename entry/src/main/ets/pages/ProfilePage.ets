@@ -2,7 +2,6 @@ import { UserInfo } from '../models/UserInfo';
 import { Toast } from '../utils/Toast';
 import { UserService } from '../services/UserService';
 
-@Entry
 @Component
 export struct ProfilePage {
   @State userInfo: UserInfo = UserService.getInstance().getUserInfo();

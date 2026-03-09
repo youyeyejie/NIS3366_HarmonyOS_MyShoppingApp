@@ -2,8 +2,7 @@ import { CartItem } from "../models/CartItem";
 import { CartService } from "../services/CartService";
 import { Toast } from "../utils/Toast";
 import { CartItemCard } from "../utils/CartItemCard";
-import { CartDataSource } from "../utils/CartDataSource";
-@Entry
+
 @Component
 export struct CartPage {
   @State cartItems: CartItem[] = [];
@@ -13,7 +12,6 @@ export struct CartPage {
   @State hasMore: boolean = true;
   onGoShopping: () => void = () => {};
   private cartService: CartService = CartService.getInstance();
-  private cartDataSource: CartDataSource = new CartDataSource();
 
   aboutToAppear(): void {
     this.loadCartData();
@@ -22,8 +20,11 @@ export struct CartPage {
     });
   }
   loadCartData(): void {
-    this.cartItems = this.cartService.getCartItems();
-    this.cartDataSource.updateData(this.cartItems);
+    // 创建新的数组副本，确保触发状态更新
+    const items = this.cartService.getCartItems();
+    this.cartItems = items.map((item: CartItem): CartItem => {
+      return { product: item.product, quantity: item.quantity } as CartItem;
+    });
     this.isEmpty = this.cartItems.length === 0;
     this.hasMore = this.cartItems.length > 6;
     // 默认全选
@@ -63,16 +64,44 @@ export struct CartPage {
   }
 
   onDecreaseQuantity(item: CartItem): void {
-    if (item.quantity > 1) {
-      this.cartService.updateQuantity(item.product.id, item.quantity - 1);
+    const index = this.cartItems.findIndex((cartItem) => cartItem.product.id === item.product.id);
+    if (index === -1) {
+      return;
+    }
+
+    const current = this.cartItems[index];
+    if (current.quantity > 1) {
+      // 先更新本地状态，保证数量显示实时变化
+      this.cartItems = this.cartItems.map((cartItem) => {
+        if (cartItem.product.id === item.product.id) {
+          return { product: cartItem.product, quantity: cartItem.quantity - 1 } as CartItem;
+        }
+        return cartItem;
+      });
+      this.calculateTotal();
+      this.cartService.updateQuantity(item.product.id, current.quantity - 1);
     } else {
-      this.cartService.removeFromCart(item.product.id);
+      this.cartItems = this.cartItems.filter((cartItem) => cartItem.product.id !== item.product.id);
       this.selectedItems.delete(item.product.id);
+      this.isEmpty = this.cartItems.length === 0;
+      this.calculateTotal();
+      this.cartService.removeFromCart(item.product.id);
     }
   }
 
   onIncreaseQuantity(item: CartItem): void {
-    this.cartService.updateQuantity(item.product.id, item.quantity + 1);
+    const currentItem = this.cartItems.find((cartItem) => cartItem.product.id === item.product.id);
+    if (currentItem) {
+      // 先更新本地状态，保证数量显示实时变化
+      this.cartItems = this.cartItems.map((cartItem) => {
+        if (cartItem.product.id === item.product.id) {
+          return { product: cartItem.product, quantity: cartItem.quantity + 1 } as CartItem;
+        }
+        return cartItem;
+      });
+      this.calculateTotal();
+      this.cartService.updateQuantity(item.product.id, currentItem.quantity + 1);
+    }
   }
 
   onRemoveItem(item: CartItem): void {
@@ -159,23 +188,19 @@ export struct CartPage {
           .justifyContent(FlexAlign.SpaceBetween)
           .backgroundColor(Color.White)
           // 商品列表 - 使用 LazyForEach
-          List({ space: 12 }) {
-            LazyForEach(
-              this.cartDataSource,
-              (item: CartItem) => {
-                ListItem() {
-                  CartItemCard({
-                    item: item,
-                    isSelected: this.selectedItems.has(item.product.id),
-                    onToggleSelect: (productId: number) => this.onToggleSelect(productId),
-                    onDecreaseQuantity: (cartItem: CartItem) => this.onDecreaseQuantity(cartItem),
-                    onIncreaseQuantity: (cartItem: CartItem) => this.onIncreaseQuantity(cartItem),
-                    onRemoveItem: (cartItem: CartItem) => this.onRemoveItem(cartItem),
-                  })
-                };
-              },
-              (item: CartItem) => item.product.id.toString(),
-            )
+          List({ space: 12}) {
+            ForEach(this.cartItems, (item: CartItem) => {
+              ListItem() {
+                CartItemCard({
+                  item: item,
+                  isSelected: this.selectedItems.has(item.product.id),
+                  onToggleSelect: (productId: number) => this.onToggleSelect(productId),
+                  onDecreaseQuantity: (cartItem: CartItem) => this.onDecreaseQuantity(cartItem),
+                  onIncreaseQuantity: (cartItem: CartItem) => this.onIncreaseQuantity(cartItem),
+                  onRemoveItem: (cartItem: CartItem) => this.onRemoveItem(cartItem),
+                })
+              };
+            }, (item: CartItem) => `${item.product.id}-${item.quantity}`)
           }
           .width("100%")
           .layoutWeight(1)

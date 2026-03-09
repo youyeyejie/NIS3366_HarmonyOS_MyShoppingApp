@@ -85,7 +85,9 @@ NIS3366_HarmonyOS_MyShoppingApp
 - 当前数据以本地模拟数据为主，便于课程演示与功能验证。
 - 当前项目只实现了 UI 界面的基本功能，存在大量未实现的业务逻辑。未实现的功能统一通过 `Dialog` 组件弹窗提示“功能尚未实现，敬请期待！”。
 
-<img align="center" src="image/dialog-undo.png" alt="未实现功能弹窗提示" width="24%"/>
+<div align="center">
+    <img src="image/dialog-undo.png" alt="未实现功能弹窗提示" width="24%"/>
+</div>
 
 ## 后续可扩展方向
 - 接入真实后端接口与网络请求

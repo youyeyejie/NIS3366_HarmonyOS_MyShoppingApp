@@ -1,6 +1,8 @@
 # NIS3366 HarmonyOS MyShoppingApp
 
-<img src="image/startIcon.png" alt="应用图标" width="120" style="display: block; margin: 0 auto;" />
+<p align="center" width="100%">
+    <img src="image/startIcon.png" alt="应用图标" width="120" />
+</p>
 
 ## 项目简介
 
@@ -80,10 +82,12 @@ NIS3366_HarmonyOS_MyShoppingApp
 
 
 ## 开发说明
+<img align="right" src="image/dialog-undo.png" alt="未实现功能弹窗提示" width="20%"/>
 
 - 当前数据以本地模拟数据为主，便于课程演示与功能验证。
-- 未实现业务入口统一通过 `Dialog` 组件提示“功能尚未实现，敬请期待！”。
-    ![](image/dialog-undo.png)
+- 当前项目只实现了 UI 界面的基本功能，存在大量未实现的业务逻辑。未实现的功能统一通过 `Dialog` 组件弹窗提示“功能尚未实现，敬请期待！”。
+
+
 
 ## 后续可扩展方向
 - 接入真实后端接口与网络请求

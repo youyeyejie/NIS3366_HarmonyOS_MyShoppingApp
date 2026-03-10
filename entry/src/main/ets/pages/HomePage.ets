@@ -1,9 +1,9 @@
-import { Product } from '../models/Product';
-import { Category } from '../models/Category';
-import { CategoryService } from '../services/CategoryService';
-import { ProductDataSource } from '../utils/ProductDataSource';
-import { ProductCard } from '../utils/ProductCard';
-import { Dialog } from '../utils/Dialog';
+import { Product } from "../models/Product";
+import { Category } from "../models/Category";
+import { CategoryService } from "../services/CategoryService";
+import { ProductDataSource } from "../utils/ProductDataSource";
+import { ProductCard } from "../utils/ProductCard";
+import { Dialog } from "../utils/Dialog";
 
 class HomePageDataSource extends ProductDataSource {
   constructor() {
@@ -19,7 +19,7 @@ class HomePageDataSource extends ProductDataSource {
 @Component
 export struct HomePage {
   @State categories: Category[] = [];
-  @State selectedCategory: string = 'all';
+  @State selectedCategory: string = "all";
   @State isRefreshing: boolean = false;
   @State isLoading: boolean = false;
   @State dataSource: HomePageDataSource = new HomePageDataSource();
@@ -40,11 +40,16 @@ export struct HomePage {
       return;
     }
     this.selectedCategory = categoryId;
-    this.categories = this.categories.map(cat => ({
-      id: cat.id,
-      name: cat.name,
-      isSelected: cat.id === categoryId
-    } as Category));
+    // 更新分类选中状态
+    this.categories = this.categories.map(
+      (cat) =>
+        ({
+          id: cat.id,
+          name: cat.name,
+          isSelected: cat.id === categoryId,
+        }) as Category,
+    );
+    // 滚动到顶部
     this.scroller.scrollTo({ xOffset: 0, yOffset: 0 });
     // 设置分类并重新加载数据
     this.dataSource.setCategory(categoryId);
@@ -80,8 +85,8 @@ export struct HomePage {
       yOffset: 0,
       animation: {
         duration: 500,
-        curve: Curve.EaseInOut
-      }
+        curve: Curve.EaseInOut,
+      },
     });
     this.showBackToTop = false;
   }
@@ -90,17 +95,16 @@ export struct HomePage {
     Column() {
       // 顶部标题栏
       Row() {
-        Text('毕办商城')
+        Text("毕办商城")
           .fontSize(18)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#333333')
-
+          .fontColor("#333333")
         Row() {
-          Image($r('app.media.search'))
+          Image($r("app.media.search"))
             .width(24)
             .height(24)
             .onClick(() => Dialog.showNotImplemented())
-          Image($r('app.media.bell'))
+          Image($r("app.media.bell"))
             .width(24)
             .height(24)
             .margin({ left: 16 })
@@ -108,7 +112,7 @@ export struct HomePage {
         }
       }
       .justifyContent(FlexAlign.SpaceBetween)
-      .width('100%')
+      .width("100%")
       .padding({ left: 16, right: 16, top: 12, bottom: 12 })
       .backgroundColor(Color.White)
 
@@ -119,38 +123,45 @@ export struct HomePage {
             Text(category.name)
               .fontSize(14)
               .padding({ left: 16, right: 16, top: 6, bottom: 6 })
-              .backgroundColor(category.isSelected ? '#ff4d4f' : '#e8e8e8')
-              .fontColor(category.isSelected ? Color.White : '#666666')
+              .backgroundColor(category.isSelected ? "#ff4d4f" : "#e8e8e8")
+              .fontColor(category.isSelected ? Color.White : "#666666")
               .borderRadius(16)
               .onClick(() => {
                 this.onCategoryClick(category.id);
-              })
+              });
           })
         }
       }
       .scrollable(ScrollDirection.Horizontal)
       .scrollBar(BarState.Off)
-      .width('100%')
+      .width("100%")
       .padding({ left: 16, right: 16, top: 8, bottom: 8 })
-      .backgroundColor('#f5f5f5')
+      .backgroundColor("#f5f5f5")
 
-      // 商品列表 - 使用 LazyForEach 实现懒加载
+      // 商品列表 - 使用 Refresh 组件实现下拉刷新，采用 Grid 布局，使用 LazyForEach 实现懒加载
       Refresh({ refreshing: this.isRefreshing, offset: 50, friction: 70 }) {
         Scroll(this.scroller) {
           Column() {
             Grid() {
-              LazyForEach(this.dataSource, (product: Product) => {
-                GridItem() {
-                  ProductCard({ product: product })
-                }
-              }, (product: Product) => product.id.toString())
+              LazyForEach(
+                this.dataSource,
+                (product: Product) => {
+                  GridItem() {
+                    ProductCard({ product: product })
+                      .onAppear(() => {
+                        console.info(`appear: ${product.name}`);
+                      })
+                  };
+                },
+                (product: Product) => product.id.toString(),
+              )
             }
-            .columnsTemplate('1fr 1fr')
+            .columnsTemplate("1fr 1fr")
             .columnsGap(12)
             .rowsGap(12)
             .padding(12)
-            .width('100%')
-            .backgroundColor('#f5f5f5')
+            .width("100%")
+            .backgroundColor("#f5f5f5")
             .onScrollIndex((FirstIndex: number, lastIndex: number) => {
               // 滚动到接近底部时加载更多
               if (lastIndex >= this.dataSource.totalCount() - 2 && this.dataSource.getHasMore()) {
@@ -161,20 +172,20 @@ export struct HomePage {
             // 到底提示
             if (!this.dataSource.getHasMore() && this.dataSource.totalCount() > 0) {
               Row() {
-                Text('已经到底啦，没有更多商品了')
+                Text("已经到底啦，没有更多商品了")
                   .fontSize(14)
-                  .fontColor('#999999')
+                  .fontColor("#999999")
               }
-              .width('100%')
+              .width("100%")
               .justifyContent(FlexAlign.Center)
-              .padding(16)
+              .padding(16);
             }
           }
         }
         .scrollable(ScrollDirection.Vertical)
         .scrollBar(BarState.Off)
-        .width('100%')
-        .backgroundColor('#f5f5f5')
+        .width("100%")
+        .backgroundColor("#f5f5f5")
         .onScrollStop(() => {
           this.onScrollStop();
         })
@@ -189,30 +200,29 @@ export struct HomePage {
       .onRefreshing(() => {
         this.onRefresh();
       })
-      .width('100%')
+      .width("100%")
       .layoutWeight(1)
 
       // 悬浮的返回顶部按钮
       Column() {
-        Image($r('app.media.up'))
+        Image($r("app.media.up"))
           .width(28)
           .height(28)
-          
       }
       .width(44)
       .height(44)
-      .backgroundColor('rgba(0, 0, 0, 0.5)')
+      .backgroundColor("rgba(0, 0, 0, 0.5)")
       .borderRadius(22)
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
-      .position({ x: '82%', y: '90%' })
+      .position({ x: "82%", y: "90%" })
       .opacity(this.showBackToTop ? 1 : 0)
       .animation({ duration: 300 })
       .onClick(() => {
         this.scrollToTop();
       })
     }
-    .width('100%')
-    .height('100%')
+    .width("100%")
+    .height("100%");
   }
 }

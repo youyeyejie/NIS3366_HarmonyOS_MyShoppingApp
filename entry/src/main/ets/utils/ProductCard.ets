@@ -1,6 +1,11 @@
 import { Product } from '../models/Product';
 import { CartService } from '../services/CartService';
 
+/**
+ * 商品卡片组件，显示商品图片、名称、价格和加入购物车按钮
+ *
+ * 点击加入购物车按钮时调用CartService的addToCart方法，并提供点击动效反馈
+ */
 @Component
 export struct ProductCard {
   public product: Product = {} as Product;

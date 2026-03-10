@@ -21,11 +21,12 @@ export struct HomePage {
   @State categories: Category[] = [];
   @State selectedCategory: string = "all";
   @State isRefreshing: boolean = false;
-  @State isLoading: boolean = false;
+  @State showNoMoreTip: boolean = false;
   @State dataSource: HomePageDataSource = new HomePageDataSource();
   @State showBackToTop: boolean = false;
   private scroller: Scroller = new Scroller();
   private categoryService: CategoryService = CategoryService.getInstance();
+  private noMoreTipTimer: number = -1;
 
   aboutToAppear(): void {
     this.categories = this.categoryService.getCategories();
@@ -53,6 +54,7 @@ export struct HomePage {
     this.scroller.scrollTo({ xOffset: 0, yOffset: 0 });
     // 设置分类并重新加载数据
     this.dataSource.setCategory(categoryId);
+    this.showNoMoreTip = false;
   }
 
   /**
@@ -61,7 +63,24 @@ export struct HomePage {
   onRefresh(): void {
     this.isRefreshing = true;
     this.dataSource.loadProducts();
+    this.showNoMoreTip = false;
     this.isRefreshing = false;
+    console.info("Data refreshed");
+  }
+
+  /**
+   * 显示到底提示 Toast：淡入后约 1.5 秒自动淡出。
+   */
+  showNoMoreToast(): void {
+    this.showNoMoreTip = true;
+    if (this.noMoreTipTimer >= 0) {
+      clearTimeout(this.noMoreTipTimer);
+    }
+    this.noMoreTipTimer = setTimeout(() => {
+      this.showNoMoreTip = false;
+      this.noMoreTipTimer = -1;
+    }, 1500);
+    console.info("No more data to load");
   }
 
   /**
@@ -71,8 +90,21 @@ export struct HomePage {
     // 滚动停止时检查位置
     let yOffset = this.scroller.currentOffset().yOffset;
     this.showBackToTop = yOffset > 100;
-    if (!this.isLoading && this.dataSource.getHasMore()) {
-      this.dataSource.loadMore();
+  }
+
+  /**
+   * 列表滚动索引回调：触底加载更多，同时在到底时显示提示。
+   */
+  onGridScrollIndex(_firstIndex: number, lastIndex: number): void {
+    const total = this.dataSource.totalCount();
+    if (total <= 0) {
+      this.showNoMoreTip = false;
+      return;
+    }
+
+    const reachEnd = lastIndex >= total - 1;
+    if (reachEnd && !this.showNoMoreTip) {
+      this.showNoMoreToast();
     }
   }
 
@@ -89,6 +121,7 @@ export struct HomePage {
       },
     });
     this.showBackToTop = false;
+    console.info("Scrolling to top");
   }
 
   build() {
@@ -140,52 +173,35 @@ export struct HomePage {
 
       // 商品列表 - 使用 Refresh 组件实现下拉刷新，采用 Grid 布局，使用 LazyForEach 实现懒加载
       Refresh({ refreshing: this.isRefreshing, offset: 50, friction: 70 }) {
-        Scroll(this.scroller) {
-          Column() {
-            Grid() {
-              LazyForEach(
-                this.dataSource,
-                (product: Product) => {
-                  GridItem() {
-                    ProductCard({ product: product })
-                      .onAppear(() => {
-                        console.info(`appear: ${product.name}`);
-                      })
-                  };
-                },
-                (product: Product) => product.id.toString(),
-              )
-            }
-            .columnsTemplate("1fr 1fr")
-            .columnsGap(12)
-            .rowsGap(12)
-            .padding(12)
-            .width("100%")
-            .backgroundColor("#f5f5f5")
-            .onScrollIndex((FirstIndex: number, lastIndex: number) => {
-              // 滚动到接近底部时加载更多
-              if (lastIndex >= this.dataSource.totalCount() - 2 && this.dataSource.getHasMore()) {
-                this.dataSource.loadMore();
-              }
-            })
-
-            // 到底提示
-            if (!this.dataSource.getHasMore() && this.dataSource.totalCount() > 0) {
-              Row() {
-                Text("已经到底啦，没有更多商品了")
-                  .fontSize(14)
-                  .fontColor("#999999")
-              }
-              .width("100%")
-              .justifyContent(FlexAlign.Center)
-              .padding(16);
-            }
-          }
+        Grid(this.scroller) {
+          LazyForEach(
+            this.dataSource,
+            (product: Product) => {
+              GridItem() {
+                ProductCard({ product: product })
+                  .onAppear(() => {
+                    console.info(`Product ${product.id} appeared`);
+                  })
+                  .onDisAppear(() => {
+                    console.info(`Product ${product.id} disappeared`);
+                  })
+              };
+            },
+            (product: Product) => product.id.toString(),
+          )
         }
-        .scrollable(ScrollDirection.Vertical)
+        .columnsTemplate("1fr 1fr")
+        .columnsGap(12)
+        .rowsGap(12)
+        .padding(12)
         .scrollBar(BarState.Off)
         .width("100%")
+        .height("100%")
         .backgroundColor("#f5f5f5")
+        .cachedCount(4)
+        .onScrollIndex((firstIndex: number, lastIndex: number) => {
+          this.onGridScrollIndex(firstIndex, lastIndex);
+        })
         .onScrollStop(() => {
           this.onScrollStop();
         })
@@ -202,6 +218,21 @@ export struct HomePage {
       })
       .width("100%")
       .layoutWeight(1)
+      Row() {
+        Text("已经到底啦，没有更多商品了")
+          .fontSize(13)
+          .fontColor("#ffffff")
+          .padding({ left: 14, right: 14, top: 8, bottom: 8 })
+          .backgroundColor("rgba(0, 0, 0, 0.65)")
+          .borderRadius(16)
+      }
+      .width("100%")
+      .justifyContent(FlexAlign.Center)
+      .position({ x: 0, y: "91%" })
+      .opacity(this.showNoMoreTip ? 1 : 0)
+      .translate({ x: 0, y: this.showNoMoreTip ? 0 : 12 })
+      .animation({ duration: 220, curve: Curve.EaseInOut })
+      .hitTestBehavior(HitTestMode.None)
 
       // 悬浮的返回顶部按钮
       Column() {

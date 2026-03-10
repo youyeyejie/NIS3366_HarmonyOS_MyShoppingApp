@@ -35,6 +35,7 @@ export class CartService {
       this.cartItems.push({ product: product!, quantity: 1 });
     }
     this.notifyCartChange();
+    console.info(`Added product ${productId} to cart`);
   }
 
   /**
@@ -48,6 +49,7 @@ export class CartService {
       this.cartItems.splice(index, 1);
       this.notifyCartChange();
     }
+    console.info(`Removed product ${productId} from cart`);
   }
 
   /**
@@ -65,6 +67,7 @@ export class CartService {
         this.notifyCartChange();
       }
     }
+    console.info(`Updated quantity for product ${productId} to ${quantity}`);
   }
 
   /**

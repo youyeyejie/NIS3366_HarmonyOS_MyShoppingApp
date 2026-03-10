@@ -58,6 +58,7 @@ export struct CartPage {
       }
     });
     this.cartTotal = total;
+    console.log(`Total price calculated: ${this.cartTotal}`);
   }
 
   /**
@@ -67,8 +68,10 @@ export struct CartPage {
   onToggleSelect(productId: number): void {
     if (this.selectedItems.has(productId)) {
       this.selectedItems.delete(productId);
+      console.log(`Product ${productId} deselected`);
     } else {
       this.selectedItems.add(productId);
+      console.log(`Product ${productId} selected`);
     }
     this.calculateTotal();
   }
@@ -114,6 +117,7 @@ export struct CartPage {
       this.calculateTotal();
       this.cartService.removeFromCart(item.product.id);
     }
+    console.log(`Decreased quantity of product ${item.product.id}, new quantity: ${current.quantity - 1}`);
   }
 
   /**
@@ -133,6 +137,7 @@ export struct CartPage {
       this.calculateTotal();
       this.cartService.updateQuantity(item.product.id, currentItem.quantity + 1);
     }
+    console.log(`Increased quantity of product ${item.product.id}, new quantity: ${currentItem ? currentItem.quantity + 1 : 1}`);
   }
 
   /**

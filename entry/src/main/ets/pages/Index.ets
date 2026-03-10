@@ -35,6 +35,7 @@ export struct MainIndex {
         currentIndex: this.currentIndex,
         onTabChange: (index: number) => {
           this.currentIndex = index;
+          console.log(`Switched to tab index: ${index}`)
         },
       })
     }

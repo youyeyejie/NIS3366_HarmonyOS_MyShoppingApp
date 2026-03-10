@@ -19,5 +19,6 @@ export class Dialog {
    */
   static showNotImplemented(): void {
     Dialog.show("功能尚未实现，敬请期待！");
+    console.info("Dialog: not implemented message");
   }
 }

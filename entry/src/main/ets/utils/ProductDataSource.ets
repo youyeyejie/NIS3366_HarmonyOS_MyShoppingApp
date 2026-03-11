@@ -3,6 +3,7 @@ import { ProductService } from "../services/ProductService";
 
 /**
  * 商品数据源类，负责管理商品数据的加载和分页逻辑
+ *
  * 实现 IDataSource 接口，供组件使用
  */
 export class ProductDataSource implements IDataSource {
@@ -21,14 +22,6 @@ export class ProductDataSource implements IDataSource {
   loadProducts(): void {
     this.products = this.productService.getProducts(this.category);
     this.notifyDataReload();
-  }
-
-  /**
-   * 获取当前数据总数
-   * @returns 当前数据总数
-   */
-  getTotalCount(): number {
-    return this.products.length;
   }
 
   /**

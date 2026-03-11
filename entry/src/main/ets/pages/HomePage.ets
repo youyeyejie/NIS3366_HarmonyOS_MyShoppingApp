@@ -5,12 +5,6 @@ import { ProductDataSource } from "../utils/ProductDataSource";
 import { ProductCard } from "../utils/ProductCard";
 import { Dialog } from "../utils/Dialog";
 
-class HomePageDataSource extends ProductDataSource {
-  constructor() {
-    super();
-  }
-}
-
 /**
  * 首页组件，显示商品分类导航和商品列表
  *
@@ -22,11 +16,15 @@ export struct HomePage {
   @State selectedCategory: string = "all";
   @State isRefreshing: boolean = false;
   @State showNoMoreTip: boolean = false;
-  @State dataSource: HomePageDataSource = new HomePageDataSource();
+  @State dataSource: ProductDataSource = new ProductDataSource();
   @State showBackToTop: boolean = false;
   private scroller: Scroller = new Scroller();
   private categoryService: CategoryService = CategoryService.getInstance();
   private noMoreTipTimer: number = -1;
+  private firstVisibleIndex: number = 0;
+  private lastVisibleIndex: number = -1;
+  private lastTouchY: number = -1;
+  private lastScrollOffsetY: number = 0;
 
   aboutToAppear(): void {
     this.categories = this.categoryService.getCategories();
@@ -84,28 +82,66 @@ export struct HomePage {
   }
 
   /**
-   * 滚动停止事件处理方法，检查滚动位置并决定是否显示返回顶部按钮，同时触底时加载更多数据。
-   */
-  onScrollStop(): void {
-    // 滚动停止时检查位置
-    let yOffset = this.scroller.currentOffset().yOffset;
-    this.showBackToTop = yOffset > 100;
-  }
-
-  /**
    * 列表滚动索引回调：触底加载更多，同时在到底时显示提示。
    */
   onGridScrollIndex(_firstIndex: number, lastIndex: number): void {
+    this.firstVisibleIndex = _firstIndex;
+    this.lastVisibleIndex = lastIndex;
+
     const total = this.dataSource.totalCount();
     if (total <= 0) {
       this.showNoMoreTip = false;
       return;
     }
 
+    const yOffset = this.scroller.currentOffset().yOffset;
+    const isScrollable = yOffset > 0;
+    const movingToBottom = yOffset >= this.lastScrollOffsetY;
     const reachEnd = lastIndex >= total - 1;
-    if (reachEnd && !this.showNoMoreTip) {
+    if (reachEnd && isScrollable && movingToBottom && !this.showNoMoreTip) {
       this.showNoMoreToast();
     }
+    this.lastScrollOffsetY = yOffset;
+  }
+
+  /**
+   * 列表触摸事件处理方法：记录触摸位置以判断上滑动作，并在上滑时尝试显示到底提示。
+   * @param event 触摸事件对象
+   */
+  private onGridTouch(event: TouchEvent): void {
+    const touch = event.touches[0];
+
+    // 如果是触摸开始，记录初始触摸位置
+    if (event.type === TouchType.Down && touch) {
+      this.lastTouchY = touch.y;
+      return;
+    }
+    // 如果是触摸结束或取消，重置触摸位置
+    if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
+      this.lastTouchY = -1;
+      return;
+    }
+    // 如果是触摸移动，更新返回顶部按钮状态，并判断是否上滑以尝试显示到底提示
+    if (event.type === TouchType.Move) {
+      this.showBackToTop = this.scroller.currentOffset().yOffset > 100;
+      if (touch) {
+        const isUpSwipe = this.lastTouchY >= 0 && touch.y < this.lastTouchY;
+        this.lastTouchY = touch.y;
+        if (isUpSwipe) {
+          const total = this.dataSource.totalCount();
+          // 如果没有数据或已经显示到底提示，则不再尝试显示
+          if (total <= 0 || this.showNoMoreTip) {
+            return;
+          }
+          // 如果列表不可滚动且用户上滑了，显示到底提示
+          if (this.firstVisibleIndex === 0 && this.lastVisibleIndex >= total - 1) {
+            this.showNoMoreToast();
+          }
+        }
+      }
+      return;
+    }
+
   }
 
   /**
@@ -179,13 +215,13 @@ export struct HomePage {
             (product: Product) => {
               GridItem() {
                 ProductCard({ product: product })
-                  .onAppear(() => {
-                    console.info(`Product ${product.id} appeared`);
-                  })
-                  .onDisAppear(() => {
-                    console.info(`Product ${product.id} disappeared`);
-                  })
-              };
+              }
+              .onAppear(() => {
+                console.info(`Product ${product.id} appeared`);
+              })
+              .onDisAppear(() => {
+                console.info(`Product ${product.id} disappeared`);
+              });
             },
             (product: Product) => product.id.toString(),
           )
@@ -203,14 +239,10 @@ export struct HomePage {
           this.onGridScrollIndex(firstIndex, lastIndex);
         })
         .onScrollStop(() => {
-          this.onScrollStop();
+          this.showBackToTop = this.scroller.currentOffset().yOffset > 100;
         })
         .onTouch((event: TouchEvent) => {
-          if (event.type === TouchType.Move) {
-            // 滑动时获取当前位置
-            let yOffset = this.scroller.currentOffset().yOffset;
-            this.showBackToTop = yOffset > 100;
-          }
+          this.onGridTouch(event);
         })
       }
       .onRefreshing(() => {
@@ -218,6 +250,8 @@ export struct HomePage {
       })
       .width("100%")
       .layoutWeight(1)
+
+      // 底部提示 - 当用户上滑到列表底部时显示，约 1.5 秒后自动隐藏
       Row() {
         Text("已经到底啦，没有更多商品了")
           .fontSize(13)

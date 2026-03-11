@@ -28,6 +28,16 @@ export struct HomePage {
 
   aboutToAppear(): void {
     this.categories = this.categoryService.getCategories();
+    this.showNoMoreTip = false;
+    this.lastTouchY = -1;
+    this.lastScrollOffsetY = 0;
+  }
+
+  aboutToDisappear(): void {
+    if (this.noMoreTipTimer >= 0) {
+      clearTimeout(this.noMoreTipTimer);
+      this.noMoreTipTimer = -1;
+    }
   }
 
   /**

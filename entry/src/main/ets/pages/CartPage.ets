@@ -27,13 +27,25 @@ export struct CartPage {
   private lastVisibleIndex: number = -1;
   private lastTouchY: number = -1;
   private lastScrollOffsetY: number = 0;
+  private hasCartChangeSubscribed: boolean = false;
+  private cartChangeHandler: () => void = () => {
+    this.loadCartData();
+  };
 
   // 页面即将展示时加载购物车数据，并注册监听购物车变化的回调，确保数据实时更新
   aboutToAppear(): void {
     this.loadCartData();
-    this.cartService.onCartChange(() => {
-      this.loadCartData();
-    });
+    if (!this.hasCartChangeSubscribed) {
+      this.cartService.onCartChange(this.cartChangeHandler);
+      this.hasCartChangeSubscribed = true;
+    }
+  }
+
+  aboutToDisappear(): void {
+    if (this.hasCartChangeSubscribed) {
+      this.cartService.offCartChange(this.cartChangeHandler);
+      this.hasCartChangeSubscribed = false;
+    }
   }
 
   /**

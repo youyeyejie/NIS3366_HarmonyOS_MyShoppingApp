@@ -106,7 +106,20 @@ export class CartService {
    * @param callback 购物车变化时的回调函数
    */
   public onCartChange(callback: () => void): void {
-    this.cartChangeCallbacks.push(callback);
+    if (this.cartChangeCallbacks.indexOf(callback) < 0) {
+      this.cartChangeCallbacks.push(callback);
+    }
+  }
+
+  /**
+   * 取消注册购物车变化回调函数
+   * @param callback 需要移除的回调函数
+   */
+  public offCartChange(callback: () => void): void {
+    const index = this.cartChangeCallbacks.indexOf(callback);
+    if (index >= 0) {
+      this.cartChangeCallbacks.splice(index, 1);
+    }
   }
 
   /**

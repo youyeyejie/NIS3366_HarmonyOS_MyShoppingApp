@@ -38,10 +38,11 @@ NIS3366_HarmonyOS_MyShoppingApp
 │  │  │  └─ UserService.ets
 │  │  └─ utils/                     # 通用组件与工具
 │  │     ├─ BottomNavBar.ets
-│  │     ├─ ProductCard.ets
+│  │     ├─ CartDataSource.ets
 │  │     ├─ CartItemCard.ets
-│  │     ├─ ProductDataSource.ets
-│  │     └─ Dialog.ets
+│  │     ├─ Dialog.ets
+│  │     ├─ ProductCard.ets
+│  │     └─ ProductDataSource.ets
 │  └─ src/main/resources/           # 资源文件目录
 ├─ image/                           # README 演示截图与图标
 ├─ hvigor/                          # Hvigor 构建配置
@@ -91,9 +92,7 @@ NIS3366_HarmonyOS_MyShoppingApp
     <img src="image/dialog-undo.png" alt="未实现功能弹窗提示" width="24%"/>
 </div>
 
-## 后续可扩展方向
-- 接入真实后端接口与网络请求
-- 增加登录鉴权、订单管理、支付流程
-- 增加本地持久化（购物车、用户配置）
-- 补充自动化测试与 UI 测试
+## 参考文档
+- [HarmonyOS 官方文档](https://developer.huawei.com/consumer/cn/doc/)
+- [OpenHarmony Docs](https://gitcode.com/openharmony/docs/tree/OpenHarmony-6.0-Release)
 

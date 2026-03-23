@@ -11,6 +11,7 @@ import { CartDataSource } from "../utils/CartDataSource";
  */
 @Component
 export struct CartPage {
+  private readonly statusBarOffset: number = 36;
   @State cartItems: CartItem[] = [];
   @State selectedItems: Set<number> = new Set();
   @State cartTotal: number = 0;
@@ -315,7 +316,7 @@ export struct CartPage {
           .fontColor("#333333")
       }
       .width("100%")
-      .padding({ left: 16, right: 16, top: 12, bottom: 12 })
+      .padding({ left: 16, right: 16, top: 12 + this.statusBarOffset, bottom: 12 })
       .backgroundColor(Color.White)
 
       if (this.isEmpty) {

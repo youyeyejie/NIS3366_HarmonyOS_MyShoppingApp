@@ -9,6 +9,7 @@ import { UserService } from "../services/UserService";
  */
 @Component
 export struct ProfilePage {
+  private readonly statusBarOffset: number = 36;
   @State userInfo: UserInfo = UserService.getInstance().getUserInfo();
   scroller: Scroller = new Scroller();
 
@@ -36,7 +37,7 @@ export struct ProfilePage {
           .margin({ left: 16 })
         }
         .width("100%")
-        .padding({ left: 20, right: 20, top: 40, bottom: 30 })
+        .padding({ left: 20, right: 20, top: 40 + this.statusBarOffset, bottom: 30 })
         .backgroundColor("#ff4d4f")
         .justifyContent(FlexAlign.Start)
 

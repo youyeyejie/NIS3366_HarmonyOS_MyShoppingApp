@@ -97,6 +97,6 @@ export struct BottomNavBar {
       width: { top: 1 },
       color: '#e5e5e5'
     })
-    .padding({ top: 8, bottom: 8 })
+    .padding({ top: 8, bottom: 16 })
   }
 }

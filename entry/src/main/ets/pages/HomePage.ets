@@ -12,6 +12,7 @@ import { Dialog } from "../utils/Dialog";
  */
 @Component
 export struct HomePage {
+  private readonly statusBarOffset: number = 36;
   @State categories: Category[] = [];
   @State selectedCategory: string = "all";
   @State isRefreshing: boolean = false;
@@ -192,7 +193,7 @@ export struct HomePage {
       }
       .justifyContent(FlexAlign.SpaceBetween)
       .width("100%")
-      .padding({ left: 16, right: 16, top: 12, bottom: 12 })
+      .padding({ left: 16, right: 16, top: 12 + this.statusBarOffset, bottom: 12 })
       .backgroundColor(Color.White)
 
       // 分类导航

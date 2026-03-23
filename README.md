@@ -81,7 +81,7 @@ NIS3366_HarmonyOS_MyShoppingApp
 <img src="image/profilepage.png" alt="我的页面" width="24%"/>
 </div>
 
-初试时购物车为空，点击“去逛逛”按钮将跳转至首页，用户可以浏览商品并添加到购物车。
+初始时购物车为空，点击“去逛逛”按钮将跳转至首页，用户可以浏览商品并添加到购物车。
 
 
 ## 开发说明

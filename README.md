@@ -1,8 +1,7 @@
-# NIS3366 HarmonyOS MyShoppingApp
-
 <p align="center" width="100%">
     <img src="image/startIcon.png" alt="应用图标" width="120" />
 </p>
+<h1 align="center" width="100%"> NIS3366 HarmonyOS MyShoppingApp </h1>
 
 ## 项目简介
 
